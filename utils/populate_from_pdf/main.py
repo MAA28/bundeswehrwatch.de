@@ -50,7 +50,7 @@ def insert_df(df: pd.DataFrame, col):
           .where(df.notna(), None)   # NaN / pd.NA / NaT -> None (stored as null)
           .to_dict("records")
     )
-    col.insert_many(records)
+    # col.insert_many(records)
 
 
 def main():
@@ -61,54 +61,63 @@ def main():
     events1["Art der Veranstaltung"] = "Karriereberatungen"
     events1["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events1, col)
+    print(list(events1.columns.values))
     print("Inserted  Karriereberatungen")
 
     events2 = load_events("02_Seminare-Jugendoffiziere-Q4-2026.pdf")
     events2["Art der Veranstaltung"] = "Seminare mit Jugendoffizier"
     events2["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events2, col)
+    print(list(events2.columns.values))
     print("Inserted  Seminare mit Jugendoffizier")
 
     events3 = load_events("04_Messe-Austellungen-Q4-2026.pdf")
     events3["Art der Veranstaltung"] = "Messeaustellungen"
     events3["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events3, col)
+    print(list(events3.columns.values))
     print("Inserted  Messeaustellungen")
 
     events4 = load_events("05_Sportveranstaltungen-Q4-2026.pdf")
     events4["Art der Veranstaltung"] = "Sportveranstaltungen"
     events4["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events4, col)
+    print(list(events4.columns.values))
     print("Inserted  Sportveranstaltungen")
 
     events5 = load_events("06_BIZ-JC-Q4-2026.pdf")
     events5["Art der Veranstaltung"] = "Vorträge in Jobcentern oder Berufsinformationszentren"
     events5["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events5, col)
+    print(list(events5.columns.values))
     print("Inserted  Vorträge in Jobcentern oder Berufsinformationszentren")
 
     events6 = load_events("07_Karrieretreffs-Q4-2026.pdf")
     events6["Art der Veranstaltung"] = "KarriereTreffs"
     events6["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events6, col)
+    print(list(events6.columns.values))
     print("Inserted  KarriereTreffs")
 
     events7 = load_events("10_Vereine-Veranstaltungen-Q4-2026.pdf")
     events7["Art der Veranstaltung"] = "Veranstaltungen von Vereinen"
     events7["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events7, col)
+    print(list(events7.columns.values))
     print("Inserted  Veranstaltungen von Vereinen")
 
     events8 = load_events("11_Musikkorps-Q4-2026.pdf")
     events8["Art der Veranstaltung"] = "Auftritte von Musikkorps"
     events8["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events8, col)
+    print(list(events8.columns.values))
     print("Inserted  Auftritte von Musikkorps")
 
     events9 = load_events("12_Geloebnisse-Rituale-Q4-2026.pdf")
     events9["Art der Veranstaltung"] = "Gelöbnisse, Zapfenstreiche oder andere Militärrituale"
     events9["Quelle"] = "https://dserver.bundestag.de/btd/21/088/2108888.pdf"
     insert_df(events9, col)
+    print(list(events9.columns.values))
     print("Inserted  Gelöbnisse, Zapfenstreiche oder andere Militärrituale")
 
     

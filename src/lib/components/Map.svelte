@@ -3,22 +3,13 @@
     import type { Map as MapLibreMap } from 'maplibre-gl';
 
     import 'maplibre-gl/dist/maplibre-gl.css';
-    let { events } = $props();
+    import {eventColors} from "#lib/events/eventColors.ts";
+    import type {BundeswehrEvent} from "#lib/events/bundeswehrEvent.js";
+    let { events } : { events: BundeswehrEvent[] } = $props();
 
     let mapElement: HTMLDivElement;
 
     const center: [number, number] = [10.447694, 51.163361];
-
-    const palette = ['#2563eb', '#dc2626', '#16a34a', '#f59e0b', '#9333ea', '#0891b2'];
-
-    // One color per distinct event type
-    const legendItems = $derived.by(() => {
-        const types = [...new Set(events.map((e: any) => e['Art der Veranstaltung']))];
-        return types.map((type, i) => ({
-            label: type as string,
-            color: palette[i % palette.length]
-        }));
-    });
 
     onMount(() => {
         let map: MapLibreMap | undefined;
@@ -43,15 +34,15 @@
                 });
 
                 map.on('load', () => {
-                    for (const event of events) {
-                        const type = event['Art der Veranstaltung'];
-                        const color =
-                            legendItems.find((item) => item.label === type)?.color ?? '#2563eb';
+                    for (const bundeswehrEvent of events) {
+                        const type = bundeswehrEvent['Art der Veranstaltung'];
 
-                        const popup = new maplibre.Popup({ offset: 25 }).setText(type);
+                        const color = eventColors[bundeswehrEvent['Art der Veranstaltung']];
+
+                        const popup = new maplibre.Popup({ offset: 25 }).setText(`${type} in ${bundeswehrEvent['Ort']}`);
 
                         new maplibre.Marker({ color })
-                            .setLngLat([event['lng'], event['lat']] as [number, number])
+                            .setLngLat([bundeswehrEvent.lng, bundeswehrEvent.lat] as [number, number])
                             .setPopup(popup)
                             .addTo(map!);
                     }
@@ -76,10 +67,10 @@
     <div class="legend">
         <strong>Legend</strong>
         <ul>
-            {#each legendItems as item}
+            {#each Object.entries(eventColors) as eventColor}
                 <li>
-                    <span class="swatch" style="background: {item.color}"></span>
-                    {item.label}
+                    <span class="swatch" style="background: {eventColor[1]}"></span>
+                    {eventColor[0]}
                 </li>
             {/each}
         </ul>

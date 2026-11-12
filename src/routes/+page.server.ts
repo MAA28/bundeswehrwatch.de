@@ -1,13 +1,15 @@
 import type {PageServerLoad} from './$types';
 import {connectToMongoDB} from "#lib/server/db.ts";
 import {error} from "@sveltejs/kit";
+import type {BundeswehrEvent} from "#lib/events/bundeswehrEvent.ts";
+import {parseEvent} from "#lib/events/parser.ts";
 
 export const load: PageServerLoad = async (event) => {
     const client = await connectToMongoDB();
     if (!client) {
         error(503, "Failed to connect to database");
     }
-    const current_events = await client.db("bundeswehrwatch").collection("events").aggregate([
+    const raw = await client.db("bundeswehrwatch").collection("events").aggregate([
         {
             '$addFields': {
                 '_von': {
@@ -76,5 +78,6 @@ export const load: PageServerLoad = async (event) => {
             }
         }
     ]).toArray();
+    const current_events = raw.flatMap((e) => parseEvent(e) ?? []);
     return { current_events };
 };
