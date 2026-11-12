@@ -1,5 +1,8 @@
 node_modules
 
+# intellj
+.idea
+
 # Output
 .output
 .vercel
