@@ -18,7 +18,8 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
-		"maplibre-gl": "^6.17.0"
+		"maplibre-gl": "^6.17.0",
+		"mongoose": "^9.12.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
