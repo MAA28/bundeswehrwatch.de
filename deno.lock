@@ -14,7 +14,7 @@
     "npm:eslint@^10.4.1": "10.14.0",
     "npm:globals@^17.6.0": "17.14.0",
     "npm:maplibre-gl@^6.17.0": "6.17.0",
-    "npm:mongoose@^9.12.1": "9.12.1",
+    "npm:mongodb@^7.8.0": "7.8.0",
     "npm:prettier-plugin-svelte@^4.1.0": "4.1.1_prettier@3.9.10_svelte@5.57.3",
     "npm:prettier-plugin-tailwindcss@0.8": "0.8.1_prettier@3.9.10_prettier-plugin-svelte@4.1.1_svelte@5.57.3",
     "npm:prettier@^3.8.3": "3.9.10",
@@ -978,9 +978,6 @@
     "json-stringify-pretty-compact@4.0.0": {
       "integrity": "sha512-3CNZ2DnrpByG9Nqj6Xo8vqbjT4F6N+tb4Gb28ESAZjYZ5yqvmc56J+/kuIwkaAMOyblTQhUW7PxMkUb8Q36N3Q=="
     },
-    "kareem@3.4.1": {
-      "integrity": "sha512-UlgCAFNAdk/HLSsbfkmbH8pJqpEN52Ek8RG53Ys1i3Q3gbCQruSrWpplZlgIGyDHX/LNoLW97ei3OG43s7UhUA=="
-    },
     "kdbush@4.1.0": {
       "integrity": "sha512-e9vurzrXJQrFX6ckpHP3bvj5l+9CnYzkxDNnNQ1h2QTqdWsUAJgXiKdGNcOa1EY85dU8KbQ+z/FdQdB7P+9yfQ=="
     },
@@ -1151,24 +1148,6 @@
         "bson",
         "mongodb-connection-string-url"
       ]
-    },
-    "mongoose@9.12.1": {
-      "integrity": "sha512-wPw1NKurTDShT+kr/JJvhdwPKIJkxFJv5GEbv++QahN8snPR9Fp/BFg6nQbbCyUHBB8DexwwlCQW6SfBD99QCg==",
-      "dependencies": [
-        "@standard-schema/spec",
-        "kareem",
-        "mongodb",
-        "mpath",
-        "mquery",
-        "ms",
-        "sift"
-      ]
-    },
-    "mpath@0.9.0": {
-      "integrity": "sha512-ikJRQTk8hw5DEoFVxHG1Gn9T/xcjtdnOKIU1JTmGjZZlg9LST2mBLmcX3/ICIbgJydT2GOc15RnNy5mHmzfSew=="
-    },
-    "mquery@6.0.1": {
-      "integrity": "sha512-/Nijmq3JcpHwDM+5CwBp5yEl6fUa6jLsIhPsoQywlGXU/ZrKIvSpBzfaGnW9BLqcne/CoUwd1ch7MRqptDgFTA=="
     },
     "mri@1.2.0": {
       "integrity": "sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA=="
@@ -1377,9 +1356,6 @@
     "shebang-regex@3.0.0": {
       "integrity": "sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A=="
     },
-    "sift@17.1.4": {
-      "integrity": "sha512-/OIVvj9Ts1mFwTYzW09YODMPeIOnDoigMOvKSIN44OmaCyhuCH/05UPF45XW7Ax0snmzDzCzdlSYqvqsn8+sIg=="
-    },
     "sirv@3.0.2": {
       "integrity": "sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==",
       "dependencies": [
@@ -1587,7 +1563,7 @@
         "npm:eslint@^10.4.1",
         "npm:globals@^17.6.0",
         "npm:maplibre-gl@^6.17.0",
-        "npm:mongoose@^9.12.1",
+        "npm:mongodb@^7.8.0",
         "npm:prettier-plugin-svelte@^4.1.0",
         "npm:prettier-plugin-tailwindcss@0.8",
         "npm:prettier@^3.8.3",
