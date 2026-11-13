@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
     if (!client) {
         error(503, "Failed to connect to database");
     }
-    const raw = await client.db("bundeswehrwatch").collection("events").aggregate([
+    const raw_events = await client.db("bundeswehrwatch").collection("events").aggregate([
         {
             '$addFields': {
                 '_von': {
@@ -78,6 +78,182 @@ export const load: PageServerLoad = async (event) => {
             }
         }
     ]).toArray();
-    const current_events = raw.flatMap((e) => parseEvent(e) ?? []);
-    return { current_events };
+    const current_events = raw_events.flatMap((e) => parseEvent(e) ?? []);
+
+    const events_per_day = await client.db("bundeswehrwatch").collection("events").aggregate([
+        {
+            '$set': {
+                '_start': {
+                    '$dateFromString': {
+                        'dateString': '$Zeitraum von',
+                        'format': '%d.%m.%Y',
+                        'onError': null,
+                        'onNull': null
+                    }
+                },
+                '_end': {
+                    '$dateFromString': {
+                        'dateString': '$Zeitraum bis',
+                        'format': '%d.%m.%Y',
+                        'onError': null,
+                        'onNull': null
+                    }
+                }
+            }
+        }, {
+            '$set': {
+                '_today': {
+                    '$dateTrunc': {
+                        'date': '$$NOW',
+                        'unit': 'day'
+                    }
+                },
+                '_horizon': {
+                    '$dateAdd': {
+                        'startDate': {
+                            '$dateTrunc': {
+                                'date': '$$NOW',
+                                'unit': 'day'
+                            }
+                        },
+                        'unit': 'day',
+                        'amount': 30
+                    }
+                }
+            }
+        }, {
+            '$set': {
+                '_rangeStart': {
+                    '$cond': [
+                        {
+                            '$lt': [
+                                '$_start', '$_today'
+                            ]
+                        }, '$_today', '$_start'
+                    ]
+                },
+                '_rangeEnd': {
+                    '$cond': [
+                        {
+                            '$gt': [
+                                {
+                                    '$ifNull': [
+                                        '$_end', '$_start'
+                                    ]
+                                }, '$_horizon'
+                            ]
+                        }, '$_horizon', {
+                            '$ifNull': [
+                                '$_end', '$_start'
+                            ]
+                        }
+                    ]
+                }
+            }
+        }, {
+            '$match': {
+                '$expr': {
+                    '$and': [
+                        {
+                            '$ne': [
+                                '$_start', null
+                            ]
+                        }, {
+                            '$lte': [
+                                '$_start', '$_horizon'
+                            ]
+                        }, {
+                            '$gte': [
+                                {
+                                    '$ifNull': [
+                                        '$_end', '$_start'
+                                    ]
+                                }, '$_today'
+                            ]
+                        }, {
+                            '$lte': [
+                                '$_rangeStart', '$_rangeEnd'
+                            ]
+                        }
+                    ]
+                }
+            }
+        }, {
+            '$set': {
+                '_days': {
+                    '$map': {
+                        'input': {
+                            '$range': [
+                                0, {
+                                    '$dateDiff': {
+                                        'startDate': '$_rangeStart',
+                                        'endDate': {
+                                            '$dateAdd': {
+                                                'startDate': '$_rangeEnd',
+                                                'unit': 'day',
+                                                'amount': 1
+                                            }
+                                        },
+                                        'unit': 'day'
+                                    }
+                                }
+                            ]
+                        },
+                        'as': 'i',
+                        'in': {
+                            '$dateAdd': {
+                                'startDate': '$_rangeStart',
+                                'unit': 'day',
+                                'amount': '$$i'
+                            }
+                        }
+                    }
+                }
+            }
+        }, {
+            '$unwind': '$_days'
+        }, {
+            '$group': {
+                '_id': {
+                    'tag': '$_days',
+                    'art': {
+                        '$ifNull': [
+                            '$Art der Veranstaltung', 'Unbekannt'
+                        ]
+                    }
+                },
+                'anzahl': {
+                    '$sum': 1
+                }
+            }
+        }, {
+            '$sort': {
+                '_id.art': 1
+            }
+        }, {
+            '$group': {
+                '_id': '$_id.tag',
+                'veranstaltungen': {
+                    '$push': {
+                        'k': '$_id.art',
+                        'v': '$anzahl'
+                    }
+                }
+            }
+        }, {
+            '$sort': {
+                '_id': 1
+            }
+        }, {
+            '$project': {
+                '_id': 0,
+                'day': '$_id',
+                'veranstaltungen': {
+                    '$arrayToObject': '$veranstaltungen'
+                }
+            }
+        }
+    ]).toArray();
+
+    return { current_events, events_per_day };
 };

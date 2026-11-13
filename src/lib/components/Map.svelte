@@ -1,15 +1,40 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import type { Map as MapLibreMap } from 'maplibre-gl';
+    import {onMount} from 'svelte';
+    import {SvelteSet} from 'svelte/reactivity';
+    import type {Map as MapLibreMap, Marker} from 'maplibre-gl';
 
     import 'maplibre-gl/dist/maplibre-gl.css';
     import {eventColors} from "#lib/events/eventColors.ts";
     import type {BundeswehrEvent} from "#lib/events/bundeswehrEvent.js";
-    let { events } : { events: BundeswehrEvent[] } = $props();
+
+    let {events}: { events: BundeswehrEvent[] } = $props();
 
     let mapElement: HTMLDivElement;
 
     const center: [number, number] = [10.447694, 51.163361];
+
+    const hiddenTypes = new SvelteSet<string>();
+    let markers = $state.raw<{ type: string; marker: Marker }[]>([]);
+
+    function toggleType(type: string) {
+        if (hiddenTypes.has(type)) {
+            hiddenTypes.delete(type);
+        } else {
+            hiddenTypes.add(type);
+        }
+    }
+
+    $effect(() => {
+        for (const {type, marker} of markers) {
+            const hidden = hiddenTypes.has(type);
+
+            marker.getElement().style.display = hidden ? 'none' : '';
+
+            if (hidden && marker.getPopup()?.isOpen()) {
+                marker.togglePopup();
+            }
+        }
+    });
 
     onMount(() => {
         let map: MapLibreMap | undefined;
@@ -34,18 +59,23 @@
                 });
 
                 map.on('load', () => {
+                    const created: { type: string; marker: Marker }[] = [];
+
                     for (const bundeswehrEvent of events) {
                         const type = bundeswehrEvent['Art der Veranstaltung'];
+                        const color = eventColors[type];
 
-                        const color = eventColors[bundeswehrEvent['Art der Veranstaltung']];
+                        const popup = new maplibre.Popup({offset: 25}).setText(`${type} in ${bundeswehrEvent['Ort']}`);
 
-                        const popup = new maplibre.Popup({ offset: 25 }).setText(`${type} in ${bundeswehrEvent['Ort']}`);
-
-                        new maplibre.Marker({ color })
+                        const marker = new maplibre.Marker({color})
                             .setLngLat([bundeswehrEvent.lng, bundeswehrEvent.lat] as [number, number])
                             .setPopup(popup)
                             .addTo(map!);
+
+                        created.push({type, marker});
                     }
+
+                    markers = created;
                 });
             } catch (error) {
                 console.error('Could not initialize map:', error);
@@ -61,65 +91,28 @@
     });
 </script>
 
-<div class="map-wrapper">
-    <div class="map-container" bind:this={mapElement}></div>
+<div class="relative gap-1 flex flex-col md:grid grid-cols-7">
+    <div class="h-[500px] w-full col-span-5 overflow-hidden rounded shadow" bind:this={mapElement}></div>
 
-    <div class="legend">
-        <strong>Legend</strong>
-        <ul>
-            {#each Object.entries(eventColors) as eventColor}
+    <div class="bg-surface rounded w-full col-span-2 p-3 shadow">
+        <strong>Legende</strong>
+        <ul class="mt-1 flex  gap-1 not-md:flex-wrap md:flex-col">
+            {#each Object.entries(eventColors) as [type, color]}
+                {@const hidden = hiddenTypes.has(type)}
                 <li>
-                    <span class="swatch" style="background: {eventColor[1]}"></span>
-                    {eventColor[0]}
+                    <button
+                            type="button"
+                            class="bg-surface-raised text-xs shadow p-2 rounded flex items-center gap-1.5 cursor-pointer transition-opacity md:w-full"
+                            class:opacity-40={hidden}
+                            class:line-through={hidden}
+                            aria-pressed={!hidden}
+                            onclick={() => toggleType(type)}
+                    >
+                        <span class="inline-block size-3 rounded-full aspect-square" style="background: {color}"></span>
+                        <span class="text-left">{type}</span>
+                    </button>
                 </li>
             {/each}
         </ul>
     </div>
 </div>
-
-<style>
-    .map-wrapper {
-        position: relative;
-    }
-
-    .map-container {
-        width: 100%;
-        height: 500px;
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    .legend {
-        position: absolute;
-        bottom: 16px;
-        left: 16px;
-        z-index: 1;
-        background: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-        font-size: 0.85rem;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .legend ul {
-        list-style: none;
-        margin: 4px 0 0;
-        padding: 0;
-    }
-
-    .legend li {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin: 2px 0;
-    }
-
-    .swatch {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-    }
-</style>

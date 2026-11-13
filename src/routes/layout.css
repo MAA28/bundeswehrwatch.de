@@ -1,3 +1,78 @@
 @import 'tailwindcss';
+@import '@fontsource/open-sauce-sans/400.css';
+@import '@fontsource/open-sauce-sans/500.css';
+@import '@fontsource/open-sauce-sans/600.css';
+@import '@fontsource/open-sauce-sans/700.css';
+@import '@fontsource/open-sauce-sans/800.css';
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+
+@theme {
+    --font-sans: 'Open Sauce Sans', ui-sans-serif, system-ui, sans-serif;
+    /* BRAND: primary accent (base 600 = #DB4A2B) */
+    --color-brand-50: #fef3f1;
+    --color-brand-100: #fee4df;
+    --color-brand-200: #fdcdc4;
+    --color-brand-300: #fbab9c;
+    --color-brand-400: #f57b64;
+    --color-brand-500: #ea5c3f;
+    --color-brand-600: #db4a2b;
+    --color-brand-700: #b83a20;
+    --color-brand-800: #98331e;
+    --color-brand-900: #7c2f1f;
+    --color-brand-950: #43150b;
+
+    /* CREAM: text and light surfaces (base 200 = #EDE5D6) */
+    --color-cream-50: #faf7f1;
+    --color-cream-100: #f4eee3;
+    --color-cream-200: #ede5d6;
+    --color-cream-300: #d9cfbc;
+
+    /* INK: warm dark neutrals for backgrounds, cards, borders */
+    --color-ink-950: #14100e;
+    --color-ink-900: #1c1714;
+    --color-ink-800: #272019;
+    --color-ink-700: #362d27;
+    --color-ink-600: #4a3f37;
+    --color-ink-500: #6b5e54;
+    --color-ink-400: #8f8277;
+    --color-ink-300: #b3a89b;
+
+    /* SECONDARY: muted teal, the complement of the brand hue */
+    --color-teal-300: #7fc4cb;
+    --color-teal-500: #3a9aa5;
+    --color-teal-700: #25666e;
+
+    /* HIGHLIGHT: gold */
+    --color-gold-300: #f0cb7a;
+    --color-gold-500: #e0a53a;
+    --color-gold-700: #9c6f1c;
+
+    /* STATUS */
+    --color-success: #6aa56e;
+    --color-warning: #e0a53a;
+    --color-danger: #d13b4f;
+    --color-info: #3a9aa5;
+
+    /* SEMANTIC ALIASES: use these in components */
+    --color-bg: var(--color-cream-200);            /* #EDE5D6 page background */
+    --color-surface: var(--color-cream-100);       /* cards, panels */
+    --color-surface-raised: var(--color-cream-50); /* popups, dropdowns */
+    --color-border: var(--color-cream-300);
+
+    --color-text: var(--color-ink-700);          /* body text, accent family */
+    --color-text-heading: var(--color-brand-600);  /* #DB4A2B, large text only */
+    --color-text-muted: var(--color-ink-500);      /* warm gray-brown */
+
+    --color-accent: var(--color-brand-600);
+    --color-accent-hover: var(--color-brand-700);
+    --color-on-accent: var(--color-cream-50);      /* text on accent buttons */
+}
+
+@layer base {
+    body {
+        @apply bg-bg text-text;
+    }
+}
