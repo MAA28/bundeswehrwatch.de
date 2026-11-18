@@ -2,9 +2,9 @@
 </script>
 
 <nav class="flex gap-1.5 text-sm items-center bg-surface-raised text-accent shadow m-3 p-2 rounded-2xl">
-    <a class="hover:underline" href="bundeswehrwatch.de">Homepage</a>
+    <a class="hover:underline" href="/">Homepage</a>
     <div class="border h-3"/>
-    <a class="hover:underline">Datenbank</a>
+    <a class="hover:underline" href="/db">Datenbank</a>
     <div class="border h-3"/>
     <a class="hover:underline">Kampagne: Bundeswehrfreie Schule</a>
     <div class="border h-3"/>

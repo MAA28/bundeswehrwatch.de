@@ -7,7 +7,7 @@ import {parseEvent} from "#lib/events/parser.ts";
 export const load: PageServerLoad = async (event) => {
     const client = await connectToMongoDB();
     if (!client) {
-        error(503, "Failed to connect to database");
+        error(503, "Failed to connect to db");
     }
     const raw_events = await client.db("bundeswehrwatch").collection("events").aggregate([
         {
